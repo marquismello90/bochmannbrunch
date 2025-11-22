@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bochmann Brunch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(204, 146, 61, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(204, 122, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(204, 154, 6, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #c69100 0%, #d4a76a 50%, #c69100 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .months-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+        }
+        
+        .month-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .month-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .month-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .sunday-list {
+            list-style: none;
+        }
+        
+        .sunday-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 6px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sunday-item::before {
+            content: '☀️';
+            font-size: 20px;
+        }
+        
+        .person-name {
+            font-weight: bold;
+            color: #764ba2;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bochmann Brunch</h1>
+        
+        <div class="months-grid" id="monthsGrid"></div>
+    </div>
+
+    <script>
+        function getFirstThreeSundays(year, month) {
+            const sundays = [];
+            const date = new Date(year, month, 1);
+            
+            // Find the first Sunday
+            while (date.getDay() !== 0) {
+                date.setDate(date.getDate() + 1);
+            }
+            
+            // Get the first 3 Sundays
+            for (let i = 0; i < 3; i++) {
+                if (date.getMonth() === month) {
+                    sundays.push(new Date(date));
+                    date.setDate(date.getDate() + 7);
+                }
+            }
+            
+            return sundays;
+        }
+        
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        function displayCurrentMonth() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const monthsGrid = document.getElementById('monthsGrid');
+            monthsGrid.innerHTML = '';
+            
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            const sundays = getFirstThreeSundays(year, month);
+            
+            const monthCard = document.createElement('div');
+            monthCard.className = 'month-card';
+            
+            const monthName = document.createElement('div');
+            monthName.className = 'month-name';
+            monthName.textContent = monthNames[month] + ' ' + year;
+            
+            const sundayList = document.createElement('ul');
+            sundayList.className = 'sunday-list';
+            
+            const names = ['Marquis', 'Tiyana', 'Mom'];
+            
+            sundays.forEach((sunday, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'sunday-item';
+                
+                const personName = document.createElement('span');
+                personName.className = 'person-name';
+                personName.textContent = names[index] + ':';
+                
+                listItem.appendChild(personName);
+                listItem.appendChild(document.createTextNode(' ' + formatDate(sunday)));
+                sundayList.appendChild(listItem);
+            });
+            
+            monthCard.appendChild(monthName);
+            monthCard.appendChild(sundayList);
+            monthsGrid.appendChild(monthCard);
+        }
+        
+        // Initialize with current month
+        displayCurrentMonth();
+    </script>
+</body>
+</html>
