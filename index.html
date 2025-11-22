@@ -14,10 +14,8 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(204, 146, 61, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(204, 122, 0, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(204, 154, 6, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, #c69100 0%, #d4a76a 50%, #c69100 100%);
+                linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                url('https://upload.wikimedia.org/wikipedia/commons/3/3a/Brunch_Kalaset.jpg') center/cover no-repeat fixed;
             min-height: 100vh;
             padding: 20px;
         }
@@ -36,9 +34,11 @@
         }
         
         .months-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
             justify-content: center;
-            align-items: center;
+            align-items: start;
             min-height: 60vh;
         }
         
@@ -125,11 +125,8 @@
             return date.toLocaleDateString('en-US', options);
         }
         
-        function displayCurrentMonth() {
+        function displayCurrentAndNextMonth() {
             const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-            
             const monthsGrid = document.getElementById('monthsGrid');
             monthsGrid.innerHTML = '';
             
@@ -138,40 +135,47 @@
                 'July', 'August', 'September', 'October', 'November', 'December'
             ];
             
-            const sundays = getFirstThreeSundays(year, month);
-            
-            const monthCard = document.createElement('div');
-            monthCard.className = 'month-card';
-            
-            const monthName = document.createElement('div');
-            monthName.className = 'month-name';
-            monthName.textContent = monthNames[month] + ' ' + year;
-            
-            const sundayList = document.createElement('ul');
-            sundayList.className = 'sunday-list';
-            
-            const names = ['Marquis', 'Tiyana', 'Mom'];
-            
-            sundays.forEach((sunday, index) => {
-                const listItem = document.createElement('li');
-                listItem.className = 'sunday-item';
+            // Display current month and next month
+            for (let i = 0; i < 2; i++) {
+                const displayDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+                const year = displayDate.getFullYear();
+                const month = displayDate.getMonth();
                 
-                const personName = document.createElement('span');
-                personName.className = 'person-name';
-                personName.textContent = names[index] + ':';
+                const sundays = getFirstThreeSundays(year, month);
                 
-                listItem.appendChild(personName);
-                listItem.appendChild(document.createTextNode(' ' + formatDate(sunday)));
-                sundayList.appendChild(listItem);
-            });
-            
-            monthCard.appendChild(monthName);
-            monthCard.appendChild(sundayList);
-            monthsGrid.appendChild(monthCard);
+                const monthCard = document.createElement('div');
+                monthCard.className = 'month-card';
+                
+                const monthName = document.createElement('div');
+                monthName.className = 'month-name';
+                monthName.textContent = monthNames[month] + ' ' + year;
+                
+                const sundayList = document.createElement('ul');
+                sundayList.className = 'sunday-list';
+                
+                const names = ['Marquis', 'Tiyana', 'Mom'];
+                
+                sundays.forEach((sunday, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'sunday-item';
+                    
+                    const personName = document.createElement('span');
+                    personName.className = 'person-name';
+                    personName.textContent = names[index] + ':';
+                    
+                    listItem.appendChild(personName);
+                    listItem.appendChild(document.createTextNode(' ' + formatDate(sunday)));
+                    sundayList.appendChild(listItem);
+                });
+                
+                monthCard.appendChild(monthName);
+                monthCard.appendChild(sundayList);
+                monthsGrid.appendChild(monthCard);
+            }
         }
         
-        // Initialize with current month
-        displayCurrentMonth();
+        // Initialize with current and next month
+        displayCurrentAndNextMonth();
     </script>
 </body>
 </html>
